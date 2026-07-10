@@ -24,16 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.kolarc.digitaltwin.data.repository.MockMachineRepository
+import com.kolarc.digitaltwin.di.KoinProvider
 import com.kolarc.digitaltwin.presentation.machine.MachineListUiState
 import com.kolarc.digitaltwin.presentation.machine.MachineListViewModel
 
 @Composable
 fun MachineListScreen() {
     val viewModel = remember {
-        MachineListViewModel(
-            repository = MockMachineRepository()
-        )
+        KoinProvider.koin.get<MachineListViewModel>()
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -89,7 +87,8 @@ private fun MachineListContent(
             )
         }
 
-        if (uiState.selectedTab ==
+        if (
+            uiState.selectedTab ==
             MachineListUiState.OVERVIEW_TAB_INDEX
         ) {
             OutlinedTextField(
@@ -176,13 +175,9 @@ private fun MachineListErrorContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.padding(24.dp)
     ) {
-        Text(
-            text = message
-        )
+        Text(text = message)
 
-        Button(
-            onClick = onRetry
-        ) {
+        Button(onClick = onRetry) {
             Text("Tekrar dene")
         }
     }
