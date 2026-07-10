@@ -5,9 +5,13 @@ import com.kolarc.digitaltwin.domain.model.WeldRecord
 
 interface MachineRepository {
 
-    suspend fun getMachineStatus(machineId: String): MachineStatus
+    suspend fun getMachineStatus(
+        machineId: String
+    ): MachineStatus
 
     suspend fun getAllMachines(): List<MachineStatus>
 
-    fun getWeldRecords(type: String): List<WeldRecord>
+    fun getWeldRecords(
+        type: String
+    ): List<WeldRecord>
 }

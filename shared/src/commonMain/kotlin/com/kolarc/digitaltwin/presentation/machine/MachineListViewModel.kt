@@ -2,7 +2,7 @@ package com.kolarc.digitaltwin.presentation.machine
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kolarc.digitaltwin.domain.repository.MachineRepository
+import com.kolarc.digitaltwin.domain.usecase.GetMachinesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MachineListViewModel(
-    private val repository: MachineRepository
+    private val getMachinesUseCase: GetMachinesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -19,13 +19,16 @@ class MachineListViewModel(
         )
     )
 
-    val uiState: StateFlow<MachineListUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<MachineListUiState> =
+        _uiState.asStateFlow()
 
     init {
         loadMachines()
     }
 
-    fun onSearchQueryChanged(query: String) {
+    fun onSearchQueryChanged(
+        query: String
+    ) {
         _uiState.update { currentState ->
             currentState.copy(
                 searchQuery = query
@@ -33,9 +36,12 @@ class MachineListViewModel(
         }
     }
 
-    fun onTabSelected(tabIndex: Int) {
-        val isValidTab = tabIndex == MachineListUiState.OVERVIEW_TAB_INDEX ||
-                tabIndex == MachineListUiState.LIVE_VIEW_TAB_INDEX
+    fun onTabSelected(
+        tabIndex: Int
+    ) {
+        val isValidTab =
+            tabIndex == MachineListUiState.OVERVIEW_TAB_INDEX ||
+                    tabIndex == MachineListUiState.LIVE_VIEW_TAB_INDEX
 
         if (!isValidTab) {
             return
@@ -62,7 +68,7 @@ class MachineListViewModel(
             }
 
             try {
-                val machines = repository.getAllMachines()
+                val machines = getMachinesUseCase()
 
                 _uiState.update { currentState ->
                     currentState.copy(
