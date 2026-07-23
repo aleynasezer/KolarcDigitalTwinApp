@@ -1,6 +1,8 @@
 package com.kolarc.digitaltwin.di
 
-import com.kolarc.digitaltwin.data.repository.MockMachineRepository
+import com.kolarc.digitaltwin.data.remote.FakeMachineRemoteDataSource
+import com.kolarc.digitaltwin.data.remote.MachineRemoteDataSource
+import com.kolarc.digitaltwin.data.repository.MachineRepositoryImpl
 import com.kolarc.digitaltwin.domain.repository.MachineRepository
 import com.kolarc.digitaltwin.domain.usecase.GetMachineDetailUseCase
 import com.kolarc.digitaltwin.domain.usecase.GetMachinesUseCase
@@ -10,8 +12,14 @@ import org.koin.dsl.module
 
 val appModule = module {
 
+    single<MachineRemoteDataSource> {
+        FakeMachineRemoteDataSource()
+    }
+
     single<MachineRepository> {
-        MockMachineRepository()
+        MachineRepositoryImpl(
+            remoteDataSource = get()
+        )
     }
 
     factory {
