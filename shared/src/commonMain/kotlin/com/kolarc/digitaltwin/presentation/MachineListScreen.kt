@@ -29,7 +29,9 @@ import com.kolarc.digitaltwin.presentation.machine.MachineListUiState
 import com.kolarc.digitaltwin.presentation.machine.MachineListViewModel
 
 @Composable
-fun MachineListScreen() {
+fun MachineListScreen(
+    onMachineClick: (String) -> Unit
+) {
     val viewModel = remember {
         KoinProvider.koin.get<MachineListViewModel>()
     }
@@ -40,7 +42,8 @@ fun MachineListScreen() {
         uiState = uiState,
         onTabSelected = viewModel::onTabSelected,
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
-        onRetry = viewModel::retry
+        onRetry = viewModel::retry,
+        onMachineClick = onMachineClick
     )
 }
 
@@ -49,7 +52,8 @@ private fun MachineListContent(
     uiState: MachineListUiState,
     onTabSelected: (Int) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onMachineClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -124,7 +128,8 @@ private fun MachineListContent(
                 uiState.selectedTab ==
                         MachineListUiState.OVERVIEW_TAB_INDEX -> {
                     MachineOverviewContent(
-                        uiState = uiState
+                        uiState = uiState,
+                        onMachineClick = onMachineClick
                     )
                 }
 
@@ -141,7 +146,8 @@ private fun MachineListContent(
 
 @Composable
 private fun MachineOverviewContent(
-    uiState: MachineListUiState
+    uiState: MachineListUiState,
+    onMachineClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -158,8 +164,13 @@ private fun MachineOverviewContent(
                 uiState.filteredMachines[index].id
             }
         ) { index ->
+            val machine = uiState.filteredMachines[index]
+
             DetailedMachineCard(
-                machine = uiState.filteredMachines[index]
+                machine = machine,
+                onClick = {
+                    onMachineClick(machine.id)
+                }
             )
         }
     }
@@ -177,7 +188,9 @@ private fun MachineListErrorContent(
     ) {
         Text(text = message)
 
-        Button(onClick = onRetry) {
+        Button(
+            onClick = onRetry
+        ) {
             Text("Tekrar dene")
         }
     }
