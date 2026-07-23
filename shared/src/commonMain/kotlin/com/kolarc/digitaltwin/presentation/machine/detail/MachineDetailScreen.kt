@@ -55,7 +55,8 @@ fun MachineDetailScreen(
 
     MachineDetailContent(
         uiState = uiState,
-        onBack = onBack
+        onBack = onBack,
+        onRetry = viewModel::retry
     )
 }
 
@@ -63,7 +64,8 @@ fun MachineDetailScreen(
 @Composable
 private fun MachineDetailContent(
     uiState: MachineDetailUiState,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onRetry: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -84,7 +86,7 @@ private fun MachineDetailContent(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color(0xFF1E2638),
                     navigationIconContentColor = Color(0xFF1E2638)
@@ -107,7 +109,8 @@ private fun MachineDetailContent(
 
                 uiState.errorMessage != null -> {
                     MachineDetailErrorContent(
-                        message = uiState.errorMessage
+                        message = uiState.errorMessage,
+                        onRetry = onRetry
                     )
                 }
 
@@ -373,7 +376,8 @@ private fun InformationRow(
 
 @Composable
 private fun MachineDetailErrorContent(
-    message: String
+    message: String,
+    onRetry: () -> Unit
 ) {
     Column(
         modifier = Modifier.padding(24.dp),
@@ -385,7 +389,7 @@ private fun MachineDetailErrorContent(
         )
 
         Button(
-            onClick = {}
+            onClick = onRetry
         ) {
             Text("Tekrar dene")
         }

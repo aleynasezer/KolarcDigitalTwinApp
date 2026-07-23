@@ -17,6 +17,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,7 +40,7 @@ class MachineDetailViewModelTest {
         val repository = FakeMachineRepository()
 
         val viewModel = MachineDetailViewModel(
-            machineId = "1",
+            machineId = MACHINE_ID,
             getMachineDetailUseCase = GetMachineDetailUseCase(repository)
         )
 
@@ -48,9 +49,9 @@ class MachineDetailViewModelTest {
         val state = viewModel.uiState.value
 
         assertFalse(state.isLoading)
-        assertEquals(null, state.errorMessage)
+        assertNull(state.errorMessage)
         assertNotNull(state.machineDetail)
-        assertEquals("1", state.machineDetail?.id)
+        assertEquals(MACHINE_ID, state.machineDetail?.id)
         assertEquals("PRES KAYNAGI", state.machineDetail?.name)
         assertEquals(92.4, state.machineDetail?.oeePercentage)
     }
@@ -58,11 +59,11 @@ class MachineDetailViewModelTest {
     @Test
     fun errorStateIsShownWhenLoadingFails() = runTest(testDispatcher) {
         val repository = FakeMachineRepository(
-            shouldThrowError = true
+            shouldAlwaysThrowError = true
         )
 
         val viewModel = MachineDetailViewModel(
-            machineId = "1",
+            machineId = MACHINE_ID,
             getMachineDetailUseCase = GetMachineDetailUseCase(repository)
         )
 
@@ -70,20 +71,68 @@ class MachineDetailViewModelTest {
 
         val state = viewModel.uiState.value
 
-        assertTrue(state.machineDetail == null)
+        assertNull(state.machineDetail)
         assertFalse(state.isLoading)
-        assertEquals("Test error", state.errorMessage)
+        assertEquals(ERROR_MESSAGE, state.errorMessage)
+    }
+
+    @Test
+    fun retryLoadsMachineDetailAfterFirstFailure() = runTest(testDispatcher) {
+        val repository = FakeMachineRepository(
+            shouldFailFirstRequest = true
+        )
+
+        val viewModel = MachineDetailViewModel(
+            machineId = MACHINE_ID,
+            getMachineDetailUseCase = GetMachineDetailUseCase(repository)
+        )
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val errorState = viewModel.uiState.value
+
+        assertFalse(errorState.isLoading)
+        assertNull(errorState.machineDetail)
+        assertEquals(ERROR_MESSAGE, errorState.errorMessage)
+
+        viewModel.retry()
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val successState = viewModel.uiState.value
+
+        assertFalse(successState.isLoading)
+        assertNull(successState.errorMessage)
+        assertNotNull(successState.machineDetail)
+        assertEquals(
+            expected = MACHINE_ID,
+            actual = successState.machineDetail?.id
+        )
+        assertEquals(
+            expected = 2,
+            actual = repository.requestCount
+        )
     }
 
     private class FakeMachineRepository(
-        private val shouldThrowError: Boolean = false
+        private val shouldAlwaysThrowError: Boolean = false,
+        private val shouldFailFirstRequest: Boolean = false
     ) : MachineRepository {
+
+        var requestCount: Int = 0
+            private set
 
         override suspend fun getMachineDetail(
             machineId: String
         ): MachineDetail {
+            requestCount++
+
+            val shouldThrowError =
+                shouldAlwaysThrowError ||
+                        (shouldFailFirstRequest && requestCount == 1)
+
             if (shouldThrowError) {
-                throw IllegalStateException("Test error")
+                throw IllegalStateException(ERROR_MESSAGE)
             }
 
             return MachineDetail(
@@ -115,5 +164,10 @@ class MachineDetailViewModelTest {
         ): List<WeldRecord> {
             return emptyList()
         }
+    }
+
+    private companion object {
+        const val MACHINE_ID = "1"
+        const val ERROR_MESSAGE = "Test error"
     }
 }

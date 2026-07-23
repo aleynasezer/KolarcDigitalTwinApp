@@ -31,10 +31,20 @@ class MachineDetailViewModel(
         loadMachineDetail()
     }
 
+    fun retry() {
+        _uiState.value = _uiState.value.copy(
+            isLoading = true,
+            errorMessage = null
+        )
+
+        loadMachineDetail()
+    }
+
     private fun loadMachineDetail() {
         viewModelScope.launch {
             try {
-                val machineDetail = getMachineDetailUseCase(machineId)
+                val machineDetail =
+                    getMachineDetailUseCase(machineId)
 
                 _uiState.value = MachineDetailUiState(
                     machineDetail = machineDetail,
