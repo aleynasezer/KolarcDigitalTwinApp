@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.kolarc.digitaltwin.presentation.CreateReportScreen
 import com.kolarc.digitaltwin.presentation.DashboardScreen
 import com.kolarc.digitaltwin.presentation.KaynaklarScreen
+import com.kolarc.digitaltwin.presentation.NotificationScreen
 import com.kolarc.digitaltwin.presentation.ReportsScreen
 import com.kolarc.digitaltwin.presentation.StatisticsScreen
 import com.kolarc.digitaltwin.presentation.navigation.AppNavigation
@@ -71,6 +72,11 @@ fun App() {
                 iconText = "M"
             ),
             DrawerMenuItem(
+                id = "bildirimler",
+                title = "Bildirimler",
+                iconText = "B"
+            ),
+            DrawerMenuItem(
                 id = "kaynaklar",
                 title = "Kaynaklar",
                 iconText = "K"
@@ -88,7 +94,7 @@ fun App() {
             DrawerMenuItem(
                 id = "bakim",
                 title = "Bakım",
-                iconText = "B"
+                iconText = "BK"
             )
         )
     }
@@ -128,9 +134,11 @@ fun App() {
                                 drawerState.close()
                             }
                         },
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = Color(0xFF2C3E50)
-                        )
+                        colors =
+                            NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor =
+                                    Color(0xFF2C3E50)
+                            )
                     )
                 }
             }
@@ -149,7 +157,8 @@ fun App() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment =
+                            Alignment.CenterVertically
                     ) {
                         IconButton(
                             onClick = {
@@ -198,6 +207,10 @@ fun App() {
                         AppNavigation()
                     }
 
+                    "bildirimler" -> {
+                        NotificationScreen()
+                    }
+
                     "kaynaklar" -> {
                         KaynaklarScreen()
                     }
@@ -235,7 +248,8 @@ fun App() {
                             contentAlignment = Alignment.Center
                         ) {
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment =
+                                    Alignment.CenterHorizontally
                             ) {
                                 Text(
                                     text = "⚠️",
@@ -247,7 +261,8 @@ fun App() {
                                 )
 
                                 Text(
-                                    text = "$screenTitle Ekranı Yakında",
+                                    text =
+                                        "$screenTitle Ekranı Yakında",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Gray
