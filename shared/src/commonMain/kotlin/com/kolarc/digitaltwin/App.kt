@@ -1,6 +1,5 @@
 package com.kolarc.digitaltwin
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,8 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kolarc.digitaltwin.presentation.CreateReportScreen
+import com.kolarc.digitaltwin.presentation.DashboardScreen
 import com.kolarc.digitaltwin.presentation.KaynaklarScreen
 import com.kolarc.digitaltwin.presentation.ReportsScreen
+import com.kolarc.digitaltwin.presentation.StatisticsScreen
 import com.kolarc.digitaltwin.presentation.navigation.AppNavigation
 import kotlinx.coroutines.launch
 
@@ -54,41 +55,43 @@ fun App() {
     val scope = rememberCoroutineScope()
 
     var currentScreen by remember {
-        mutableStateOf("makineler")
+        mutableStateOf("dashboard")
     }
 
-    val menuItems = listOf(
-        DrawerMenuItem(
-            id = "dashboard",
-            title = "Dashboard",
-            iconText = "D"
-        ),
-        DrawerMenuItem(
-            id = "makineler",
-            title = "Makineler",
-            iconText = "M"
-        ),
-        DrawerMenuItem(
-            id = "kaynaklar",
-            title = "Kaynaklar",
-            iconText = "K"
-        ),
-        DrawerMenuItem(
-            id = "istatistikler",
-            title = "İstatistikler",
-            iconText = "İ"
-        ),
-        DrawerMenuItem(
-            id = "raporlar",
-            title = "Raporlar",
-            iconText = "R"
-        ),
-        DrawerMenuItem(
-            id = "bakim",
-            title = "Bakım",
-            iconText = "B"
+    val menuItems = remember {
+        listOf(
+            DrawerMenuItem(
+                id = "dashboard",
+                title = "Dashboard",
+                iconText = "D"
+            ),
+            DrawerMenuItem(
+                id = "makineler",
+                title = "Makineler",
+                iconText = "M"
+            ),
+            DrawerMenuItem(
+                id = "kaynaklar",
+                title = "Kaynaklar",
+                iconText = "K"
+            ),
+            DrawerMenuItem(
+                id = "istatistikler",
+                title = "İstatistikler",
+                iconText = "İ"
+            ),
+            DrawerMenuItem(
+                id = "raporlar",
+                title = "Raporlar",
+                iconText = "R"
+            ),
+            DrawerMenuItem(
+                id = "bakim",
+                title = "Bakım",
+                iconText = "B"
+            )
         )
-    )
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -182,15 +185,25 @@ fun App() {
             }
         ) { paddingValues ->
             Box(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
             ) {
                 when (currentScreen) {
+                    "dashboard" -> {
+                        DashboardScreen()
+                    }
+
                     "makineler" -> {
                         AppNavigation()
                     }
 
                     "kaynaklar" -> {
                         KaynaklarScreen()
+                    }
+
+                    "istatistikler" -> {
+                        StatisticsScreen()
                     }
 
                     "raporlar" -> {

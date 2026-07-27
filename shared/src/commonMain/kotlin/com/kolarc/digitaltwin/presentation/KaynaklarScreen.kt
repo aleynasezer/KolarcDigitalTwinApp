@@ -15,8 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,7 +64,7 @@ fun KaynaklarScreen() {
             .background(Color(0xFFF5F7FA))
     ) {
         item {
-            TabRow(
+            PrimaryTabRow(
                 selectedTabIndex = selectedWeldTypeTab,
                 containerColor = Color.White,
                 contentColor = Color(0xFF1E2638)

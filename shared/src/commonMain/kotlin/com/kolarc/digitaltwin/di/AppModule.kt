@@ -4,12 +4,16 @@ import com.kolarc.digitaltwin.data.remote.KtorMachineRemoteDataSource
 import com.kolarc.digitaltwin.data.remote.MachineApiService
 import com.kolarc.digitaltwin.data.remote.MachineRemoteDataSource
 import com.kolarc.digitaltwin.data.remote.createMockHttpClient
+import com.kolarc.digitaltwin.data.repository.FakeDashboardRepository
 import com.kolarc.digitaltwin.data.repository.FakeWeldRecordRepository
 import com.kolarc.digitaltwin.data.repository.MachineRepositoryImpl
+import com.kolarc.digitaltwin.domain.repository.DashboardRepository
 import com.kolarc.digitaltwin.domain.repository.MachineRepository
 import com.kolarc.digitaltwin.domain.repository.WeldRecordRepository
+import com.kolarc.digitaltwin.domain.usecase.GetDashboardSummaryUseCase
 import com.kolarc.digitaltwin.domain.usecase.GetMachineDetailUseCase
 import com.kolarc.digitaltwin.domain.usecase.GetMachinesUseCase
+import com.kolarc.digitaltwin.presentation.dashboard.DashboardViewModel
 import com.kolarc.digitaltwin.presentation.machine.MachineListViewModel
 import com.kolarc.digitaltwin.presentation.machine.detail.MachineDetailViewModel
 import io.ktor.client.HttpClient
@@ -43,6 +47,10 @@ val appModule = module {
         FakeWeldRecordRepository()
     }
 
+    single<DashboardRepository> {
+        FakeDashboardRepository()
+    }
+
     factory {
         GetMachinesUseCase(
             repository = get()
@@ -56,8 +64,20 @@ val appModule = module {
     }
 
     factory {
+        GetDashboardSummaryUseCase(
+            repository = get()
+        )
+    }
+
+    factory {
         MachineListViewModel(
             getMachinesUseCase = get()
+        )
+    }
+
+    factory {
+        DashboardViewModel(
+            getDashboardSummaryUseCase = get()
         )
     }
 

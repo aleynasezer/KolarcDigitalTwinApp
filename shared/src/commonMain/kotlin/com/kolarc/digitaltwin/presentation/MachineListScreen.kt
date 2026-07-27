@@ -13,8 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -60,7 +60,7 @@ private fun MachineListContent(
             .fillMaxSize()
             .background(Color(0xFFF5F7FA))
     ) {
-        TabRow(
+        PrimaryTabRow(
             selectedTabIndex = uiState.selectedTab,
             containerColor = Color.White
         ) {
